@@ -18,7 +18,7 @@ module.exports = async function guildMemberAdd(member) {
         .setImage('https://cdn.lowgif.com/full/c55c983bbdae6934-pt-meme-gif-find-share-on-giphy.gif') //imagem da embed
         .setDescription(`${member.user}, bem-vindo ao servidor ${guild.name}! Atualmente contamos com ${member.guild.memberCount} Nerds :)`)
         .setThumbnail(member.user.displayAvatarURL( { dynamic: true, format: "png", size: 1024}))
-        .setFooter('ID do usuário' + member.user.id)
+        .setFooter('ID do usuário ' + member.user.id)
         .setTimestamp();
         await channel.send(embed);
         
