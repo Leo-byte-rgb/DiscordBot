@@ -1,13 +1,17 @@
+const dotenv = require('dotenv').config();
 const axios = require('axios');
+const TokenPokemon = process.env.POKE_API;
 
-axios.get('https://economia.awesomeapi.com.br/all/USD-BRL')
-.then((response) => {
-    console.log(response.data.USD.high.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' }));
+
+function getPokemon() {
+    let random = Math.floor(Math.random() * 150 + 1);
     
-})
-.catch((err) => {
-    console.log(err);
-})
+    return axios.get(`${TokenPokemon}/${random}`)
+}
 
+async function write() {
+    const response = await getPokemon();
+    console.log(response.data.name);
+}
 
-
+write();

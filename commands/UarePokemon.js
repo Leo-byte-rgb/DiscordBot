@@ -1,7 +1,34 @@
-module.exports = function(message) {
-    const pokemons = ['Bulbasaur','Ivysaur','Venusaur','Charmander','Charmeleon','Charizard','Squirtle','Wartortle','Blastoise','Caterpie','Metapod','Butterfree','Weedle','Kakuna','Beedrill','Pidgey','Pidgeotto','Pidgeot','Rattata','Raticate','Spearow','Fearow','Ekans','Arbok','Pikachu','Raichu','Sandshrew','Sandslash','Nidoran','Nidorina','Nidoqueen','Nidoran','Nidorino','Nidoking','Clefairy','Clefable','Vulpix','Ninetales','Jigglypuff','Wigglytuff','Zubat','Golbat','Oddish','Gloom','Vileplume','Paras','Parasect','Venonat','Venomoth','Diglett','Dugtrio','Meowth','Persian','Psyduck','Golduck','Mankey','Primeape','Growlithe','Arcanine','Poliwag','Poliwhirl','Poliwrath','Abra','Kadabra','Alakazam','Machop','Machoke','Machamp','Bellsprout','Weepinbell','Victreebel','Tentacool','Tentacruel','Geodude','Graveler','Golem','Ponyta','Rapidash','Slowpoke','Slowbro','Magnemite','Magneton','Farfetch','Doduo','Dodrio','Seel','Dewgong','Grimer','Muk','Shellder','Cloyster','Gastly','Haunter','Gengar','Onix','Drowzee','Hypno','Krabby','Kingler','Voltorb','Electrode','Exeggcute','Exeggutor','Cubone','Marowak','Hitmonlee','Hitmonchan','Lickitung','Koffing','Weezing','Rhyhorn','Rhydon','Chansey','Tangela','Kangaskhan','Horsea','Seadra','Goldeen','Seaking','Staryu','Starmie','Mr. Mime','Scyther','Jynx','Electabuzz','Magmar','Pinsir','Tauros','Magikarp','Gyarados','Lapras','Ditto','Eevee','Vaporeon','Jolteon','Flareon','Porygon','Omanyte','Omastar','Kabuto','Kabutops','Aerodactyl','Snorlax','Articuno','Zapdos','Moltres','Dratini','Dragonair','Dragonite','Mewtwo','Mew'];
+const dotenv = require('dotenv').config();
+const axios = require('axios');
+const TokenPokemon = process.env.POKE_API;
+const TokenImage = process.env.IMAGE_API;
+const Discord = require('discord.js');
+
+
+function getPokemon() {
+    let random = Math.floor(Math.random() * 150 + 1);
     
-    
-    let random = Math.floor(Math.random() * pokemons.length + 1);
-    return pokemons[random].toUpperCase();
+    return axios.get(`${TokenPokemon}/${random}`)
+}
+
+
+module.exports = async function printEmbed(message) {
+    const response = await getPokemon();
+    const channel = message.channel;
+    const embed = new Discord.MessageEmbed()
+        .setColor('#90ee90') // altera a cor da embed
+        .setAuthor(message.member.user.tag, message.member.user.displayAvatarURL()) // pega a tag e o display
+        .setTitle(`TU ÉS UM ${response.data.name.toUpperCase()}`) //titulo da embed
+        .setImage(`${TokenImage}/${response.data.id}.png`) //imagem da embed
+        .setDescription(`
+        ${message.author}, olhe os dados do seu pokemon!
+        Número: ${response.data.id}
+        Tipo: ${response.data.types.map(item => ' ' + item.type.name)}
+        Peso: ${response.data.weight / 10}KG
+        Altura: ${response.data.height / 10}M        
+        `)
+        .setThumbnail(message.member.user.displayAvatarURL( { dynamic: true, format: "png", size: 1024}))
+        .setFooter('ID do usuário ' + message.member.user.id)
+        .setTimestamp();
+        await channel.send(embed);
 }
