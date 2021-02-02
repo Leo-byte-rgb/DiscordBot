@@ -1,16 +1,13 @@
 const axios = require('axios');
 
-async function haha() {
-    const request =axios.get('https://economia.awesomeapi.com.br/json/USD-BRL')
+axios.get('https://economia.awesomeapi.com.br/all/USD-BRL')
 .then((response) => {
-     return response.data.USD.high;
+    console.log(response.data.USD.high.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' }));
+    
 })
 .catch((err) => {
-    return err;
+    console.log(err);
 })
 
- return request.data.USD;
-}
 
 
-console.log(haha())
